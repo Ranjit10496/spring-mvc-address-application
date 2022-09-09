@@ -26,8 +26,11 @@ public class AddressResources {
     }
     @PutMapping("/addresses")
     public ResponseEntity<Address> updateAddress(@RequestBody Address address) {
+        if (address.getId()==null) {
+            throw new RuntimeException("it must be not null");
+        }
         Address result = addressService.update(address);
-        return ResponseEntity.status(HttpStatus.CREATED).body(result);
+        return ResponseEntity.status(HttpStatus.OK).body(result);
     }
     @GetMapping("/addresses")
     public ResponseEntity<Page<Address>> findAll(Pageable pageable) {
@@ -39,7 +42,9 @@ public class AddressResources {
         Optional<Address> result = addressService.findOne(id);
         return ResponseEntity.status(HttpStatus.OK).build();
     }
+    @DeleteMapping("/addresses/{id}")
     public ResponseEntity<Void> deleteAddress(@PathVariable Long id) {
+        addressService.delete(id);
         return ResponseEntity.status(HttpStatus.OK).build();
     }
 }
